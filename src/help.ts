@@ -2,7 +2,11 @@ import { Composer, InlineKeyboard } from "grammy"
 
 export const help = new Composer<MyContext>()
 
-const inlineKeyboard = new InlineKeyboard().switchInline("选择一个 Chat 开始").switchInlineCurrent("让我们开始")
+const inlineKeyboard = new InlineKeyboard()
+    .switchInline("选择一个 Chat 开始")
+    .switchInlineCurrent("让我们开始")
+    .row()
+    .url("仓库地址", "https://github.com/jiang-zhexin/yaibot")
 
 help.command(["start", "help"], async (c) => {
     await c.reply(
