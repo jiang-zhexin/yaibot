@@ -1,0 +1,89 @@
+import { and, eq, inArray, like, sql } from "drizzle-orm";
+import { Composer, InlineQueryResultBuilder } from "grammy";
+import { db } from "./db/db.ts";
+import { inlines } from "./db/schema.ts";
+
+type SelectInline = typeof inlines.$inferSelect;
+
+export const inlineQuery = new Composer<yaibContext>();
+
+const limitInline = 10;
+
+inlineQuery.on("inline_query", async (c) => {
+  const { type, keyword, username } = matchQuery(c.inlineQuery.query);
+
+  const rawResults = await db
+    .select()
+    .from(inlines)
+    .where(
+      inArray(
+        inlines.id,
+        db
+          .select({ id: inlines.id })
+          .from(inlines)
+          .where(
+            and(
+              eq(inlines.type, type ?? "article"),
+              keyword ? like(inlines.title, `%${keyword}%`) : undefined,
+              username ? like(inlines.description, `%${username}%`) : undefined,
+            ),
+          )
+          .orderBy(sql`random()`)
+          .limit(limitInline),
+      ),
+    );
+
+  const results = rawResults.map(resultTransformer);
+  await c.answerInlineQuery(results, {
+    cache_time: 1,
+    button: { text: "我也加一条", start_parameter: "start" },
+  });
+});
+
+export function matchQuery(query: string) {
+  const match = query.match(
+    /^(gif|photo|sticker|audio)?\s*(\S+?)?(\s*by\s+\S+)?$/,
+  );
+  const type: SelectInline["type"] | undefined = match?.[1]
+    ?.trim() as SelectInline["type"];
+  const keyword: string | undefined = match?.[2]?.trim();
+  const username: string | undefined = match?.[3]?.trimStart()?.slice(2)
+    ?.trim();
+  return { type, keyword, username };
+}
+
+function resultTransformer(rr: SelectInline) {
+  const id = rr.id.toString();
+
+  switch (rr.type) {
+    case "article":
+      return InlineQueryResultBuilder.article(id, rr.title as string, {
+        description: `by ${rr.description}`,
+      }).text(rr.title as string, {
+        entities: rr.entities ?? undefined,
+      });
+  }
+
+  if (!rr.file_id) throw "unreachable";
+
+  switch (rr.type) {
+    case "audio":
+      return InlineQueryResultBuilder.audioCached(id, rr.file_id, {
+        caption: rr.title ?? undefined,
+        caption_entities: rr.entities ?? undefined,
+      });
+    case "photo":
+      return InlineQueryResultBuilder.photoCached(id, rr.file_id, {
+        caption: rr.title ?? undefined,
+        caption_entities: rr.entities ?? undefined,
+        description: `by ${rr.description}`,
+      });
+    case "gif":
+      return InlineQueryResultBuilder.gifCached(id, rr.file_id, {
+        caption: rr.title ?? undefined,
+        caption_entities: rr.entities ?? undefined,
+      });
+    case "sticker":
+      return InlineQueryResultBuilder.stickerCached(id, rr.file_id);
+  }
+}
