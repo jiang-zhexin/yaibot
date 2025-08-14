@@ -1,4 +1,4 @@
-import { int, sqliteTable, text, check, index } from "drizzle-orm/sqlite-core"
+import { int, sqliteTable, text, index } from "drizzle-orm/sqlite-core"
 import type { MessageEntity } from "@grammyjs/types"
 
 export const inlines = sqliteTable(

@@ -1,9 +1,8 @@
 import { Composer, InlineQueryResultBuilder } from "grammy"
-import { drizzle } from "drizzle-orm/d1"
 import { and, eq, like, inArray, sql } from "drizzle-orm"
-import { env } from "cloudflare:workers"
 
-import { inlines } from "./db/schema/inlines"
+import { inlines } from "./db/schema"
+import { db } from "./db/db"
 
 type SelectInline = typeof inlines.$inferSelect
 
@@ -13,8 +12,6 @@ const limitInline = 10
 
 inlineQuery.on("inline_query", async (c) => {
     const { type, keyword, username } = matchQuery(c.inlineQuery.query)
-
-    const db = drizzle(env.DB)
 
     const rawResults = await db
         .select()
