@@ -1,13 +1,12 @@
 import { Composer } from "grammy"
-import { Menu } from "@grammyjs/menu"
-import { drizzle } from "drizzle-orm/d1"
-import { eq } from "drizzle-orm"
-import { env } from "cloudflare:workers"
-
-import { inlines } from "./db/schema/inlines"
 import { MessageOriginChannel, MessageOriginChat, MessageOriginHiddenUser, MessageOriginUser } from "grammy/types"
+import { Menu } from "@grammyjs/menu"
+import { eq } from "drizzle-orm"
 
-type InsertInline = notNull<typeof inlines.$inferInsert>
+import { inlines } from "./db/schema"
+import { db } from "./db/db"
+
+type InsertInline = typeof inlines.$inferInsert
 
 export const forward = new Composer<MyContext>()
 
@@ -17,7 +16,6 @@ const menu = new Menu<MyContext>("delete inline").text(
         payload: (c) => c.payload,
     },
     async (c) => {
-        const db = drizzle(env.DB)
         await db
             .update(inlines)
             .set({ mark: true })
@@ -35,7 +33,6 @@ forward.on("msg:forward_origin", async (c) => {
         await c.reply("禁止套娃!")
         return
     }
-    const db = drizzle(env.DB)
     const inline: InsertInline = (() => {
         if (c.msg.text) {
             return {
@@ -91,7 +88,7 @@ forward.on("msg:forward_origin", async (c) => {
     c.payload = result[0].id.toString()
 
     await c.reply(`${inline.title || inline.type}\n—— ${inline.description}\n\n已添加`, {
-        entities: inline.entities,
+        entities: inline.entities ?? undefined,
         reply_markup: menu,
     })
 })
