@@ -7,7 +7,6 @@
 		"dev": "wrangler dev",
 		"setcommand": "bun run scripts/set_my_command.ts",
 		"setwebhook": "bun run scripts/set_webhook.ts",
-		"test": "vitest",
 		"generate": "drizzle-kit generate",
 		"types": "wrangler types"
 	},
@@ -17,12 +16,10 @@
 		"grammy": "^1.38.3"
 	},
 	"devDependencies": {
-		"@cloudflare/vitest-pool-workers": "^0.8.71",
 		"@grammyjs/types": "^3.22.2",
 		"@types/node": "^24.7.2",
 		"dotenv": "^17.2.3",
 		"drizzle-kit": "^0.31.5",
-		"vitest": "~3.2.4",
 		"wrangler": "^4.42.2"
 	}
 }

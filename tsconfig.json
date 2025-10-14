@@ -13,7 +13,6 @@
 		],
 	},
 	"exclude": [
-		"test",
 		"scripts"
 	],
 	"include": [

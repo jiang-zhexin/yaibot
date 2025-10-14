@@ -1,16 +1,16 @@
-import { Composer, InlineKeyboard } from "grammy"
+import { Composer, InlineKeyboard } from "grammy";
 
-export const help = new Composer<MyContext>()
+export const help = new Composer<MyContext>();
 
 const inlineKeyboard = new InlineKeyboard()
-    .switchInline("选择一个 Chat 开始")
-    .switchInlineCurrent("让我们开始")
-    .row()
-    .url("仓库地址", "https://github.com/jiang-zhexin/yaibot")
+  .switchInline("选择一个 Chat 开始")
+  .switchInlineCurrent("让我们开始")
+  .row()
+  .url("仓库地址", "https://github.com/jiang-zhexin/yaibot");
 
 help.command(["start", "help"], async (c) => {
-    await c.reply(
-        `*使用帮助*
+  await c.reply(
+    `*使用帮助*
 
 *如何添加语录到 inline bot？*
 把消息转发给我即可
@@ -24,6 +24,6 @@ help.command(["start", "help"], async (c) => {
 
 *如何搜索 inline 消息？*
 使用以下格式搜索: \`@yet_another_inline_bot \`\\[ \\< gif \\| photo \\| sticker \\> \\< KEYWORD \\> by \\< USERNAME \\> \\]`,
-        { parse_mode: "MarkdownV2", reply_markup: inlineKeyboard }
-    )
-})
+    { parse_mode: "MarkdownV2", reply_markup: inlineKeyboard },
+  );
+});

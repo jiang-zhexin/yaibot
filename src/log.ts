@@ -1,8 +1,8 @@
-import { Composer } from "grammy"
+import { Composer } from "grammy";
 
-export const log = new Composer<MyContext>()
+export const log = new Composer<MyContext>();
 
 log.use(async (c, next) => {
-    console.log({ update: c.update })
-    await next()
-})
+  console.log({ update: c.update });
+  await next();
+});
