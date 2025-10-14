@@ -3,24 +3,26 @@
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
-		"deploy": "wrangler deploy",
+		"deploy": "wrangler d1 migrations apply inline --remote && wrangler deploy",
 		"dev": "wrangler dev",
 		"setcommand": "bun run scripts/set_my_command.ts",
 		"setwebhook": "bun run scripts/set_webhook.ts",
 		"test": "vitest",
+		"generate": "drizzle-kit generate",
 		"types": "wrangler types"
 	},
 	"dependencies": {
 		"@grammyjs/menu": "^1.3.1",
-		"drizzle-orm": "^0.44.5",
-		"grammy": "^1.38.2"
+		"drizzle-orm": "^0.44.6",
+		"grammy": "^1.38.3"
 	},
 	"devDependencies": {
-		"@types/node": "^24.5.2",
 		"@cloudflare/vitest-pool-workers": "^0.8.71",
 		"@grammyjs/types": "^3.22.2",
-		"dotenv": "^17.2.2",
+		"@types/node": "^24.7.2",
+		"dotenv": "^17.2.3",
+		"drizzle-kit": "^0.31.5",
 		"vitest": "~3.2.4",
-		"wrangler": "^4.38.0"
+		"wrangler": "^4.42.2"
 	}
 }
