@@ -8,6 +8,7 @@ workers_dev = false
 
 [observability]
 enabled = true
+traces.enabled = true
 
 [[d1_databases]]
 binding = "DB"

@@ -1,5 +1,5 @@
 import { Composer } from "grammy";
-import {
+import type {
   MessageOriginChannel,
   MessageOriginChat,
   MessageOriginHiddenUser,
@@ -85,16 +85,20 @@ forward.on("msg:forward_origin", async (c) => {
     throw "unspport type message";
   })();
 
-  let result = await db.update(inlines).set(inline).where(
-    eq(inlines.mark, true),
-  ).limit(1).returning({ id: inlines.id });
+  let result = await db
+    .update(inlines)
+    .set(inline)
+    .where(eq(inlines.mark, true))
+    .limit(1)
+    .returning({ id: inlines.id });
+
   if (result.length === 0) {
-    result = await db.insert(inlines).values(inline).returning({
-      id: inlines.id,
-    });
+    result = await db
+      .insert(inlines)
+      .values(inline).returning({ id: inlines.id });
   }
 
-  c.payload = result[0].id.toString();
+  c.payload = result.at(0)?.id.toString()!;
 
   await c.reply(
     `${inline.title || inline.type}\n—— ${inline.description}\n\n已添加`,
