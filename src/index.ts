@@ -10,11 +10,12 @@ const bot = new Bot<yaibContext>(env.BOT_TOKEN, { botInfo: env.BOT_INFO });
 bot.use(log);
 bot.use(help);
 
-bot.use(forward);
+if (!env.FREEZE) bot.use(forward);
+
 bot.use(inlineQuery);
 
 export default {
-  async fetch(request, env, _ctx): Promise<Response> {
+  async fetch(request, env): Promise<Response> {
     return await webhookCallback(bot, "cloudflare-mod", {
       secretToken: env.SECRET_TOKEN,
     })(request).catch((err) => {
