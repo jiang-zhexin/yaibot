@@ -2,7 +2,7 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "yaibot",
   "main": "src/index.ts",
-  "compatibility_date": "2026-05-14",
+  "compatibility_date": "2026-06-16",
   "workers_dev": false,
   "observability": {
     "enabled": true,
@@ -32,6 +32,7 @@
       "has_topics_enabled": false,
       "allows_users_to_create_topics": false,
       "can_manage_bots": false,
+      "supports_join_request_queries": false,
     },
   },
 }
